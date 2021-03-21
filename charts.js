@@ -61,11 +61,12 @@ function buildCharts(sample) {
     // console.log("buildCharts")
     // console.log(data)
     // 3. Create a variable that holds the samples array. 
-    // var samplesArray = data["samples"];
+    
     var samples = data.samples;
+    console.log(samples);
     // // 4. Create a variable that filters the samples for the object with the desired sample number.
     var samplesNumber = samples.filter(sampleObj => sampleObj.id == sample);
-    // console.log(samplesNumber)
+    //console.log(data)
     // //  5. Create a variable that holds the first sample in the array.
     var firstSample = samplesNumber[0];
     console.log(firstSample)
@@ -79,7 +80,7 @@ function buildCharts(sample) {
     //  so the otu_ids with the most bacteria are last. 
     
 
-    var yticks = ids.slice(0, 10).map(otu_id => `otu_id${otu_id}`).reverse();
+    var yticks = ids.slice(0, 10).map(otu_id => `otu_id ${otu_id}`).reverse();
       // console.log(yticks)
     // 8. Create the trace for the bar chart. 
     var barData = [
@@ -92,15 +93,17 @@ function buildCharts(sample) {
     ];
     // 9. Create the layout for the bar chart. 
     var barLayout = {
-      title: "Top 10 Bacteria Cultures Found",
-      
+      title: {text: "<b>Top 10 Bacteria Cultures Found</b>", font: {size: 18}},
+      font: {color: "indigo"}
     };
     // 10. Use Plotly to plot the data with the layout. 
-    Plotly.newPlot("bar", barData, barLayout);
+    Plotly.newPlot("bar", barData, barLayout, {responsive:true});
 
 
+    // Bubble Chart
+    
     // 1. Create the trace for the bubble chart.
-    var bubbleData = [
+    var trace2 = 
       {
       x: ids,
       y: values,
@@ -111,15 +114,71 @@ function buildCharts(sample) {
         color: ids,
         colorscale: 'Electric'
       }
-    }];
+    };
 
+    var bubbleData = [trace2];
     // 2. Create the layout for the bubble chart.
     var bubbleLayout = {
-      title: "Bacteria Cultures Per Sample",
-      xaxis: {title: "OTU ID"}
+      title: { text: "<b>Bacteria Cultures Per Sample</b>", font: {size: 18}},
+      xaxis: {title: "OTU ID"},
+      hovermode: `closest`,
+      font: {color: "indigo"}
       
     };
     // 3. Use Plotly to plot the data with the layout.
-    Plotly.newPlot("bubble", bubbleData, bubbleLayout);
+    Plotly.newPlot("bubble", bubbleData, bubbleLayout, {responsive:true});
+    
+    //Gauge Chart
+    
+    // 1. variable that filters the metadata array for an object in the array whose id prperty matches
+    // the ID number passed into the buildcharts()function as the argument
+    var metaDataArray = data.metadata.filter(sampleData => sampleData.id == sample);
+    
+    // 2. 
+    var freq = metaDataArray[0];
+    console.log(freq)
+    // 3. 
+    var freqFloat = parseFloat(freq.wfreq);
+    console.log(freqFloat)
+    // 4. Create the trace for the gauge chart.
+    var trace3 = 
+     { 
+      domain: {x:[0,1], y:[0,1]},
+      value: freqFloat,
+		  
+		  type: "indicator",
+		  mode: "gauge+number",
+      gauge: {
+        axis: {range: [null, 10], tickwidth: 1, tickcolor: "blue"},
+        steps: [
+          { range: [0, 2], color: "cyan"},
+          { range: [2, 4], color: "olive"},
+          { range: [4, 6], color: "gray"},
+          { range: [6, 8], color: "pink"},
+          { range: [8, 10], color: "brown"},
+          
+           ]
+             }
+     };
+   
+    
+    
+    // Create the gauge chart
+    var gaugeData = [trace3];
+    // 5. Create the layout for the gauge chart.
+    var gaugeLayout = { 
+      title: { text: "<b>Belly Button Washing Frequency</b><br>Scrubs per Week</br>", font: {size: 18}},
+      //title: { text: " Scrubs per Week"},
+      width: 500,
+      hight: 400,
+      margins: {t: 25, r:25, l:25, b:25},
+      font: {color: "indigo"}
+		  
+    };
+
+    // 6. Use Plotly to plot the gauge data and layout.
+    
+    Plotly.newPlot("gauge", gaugeData, gaugeLayout, {responsive:true});
+
   });
 } 
