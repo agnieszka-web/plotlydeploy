@@ -6,3 +6,4 @@ Bacterial species have ability to synthesize protein that taste like beef. “Im
 
 ![](Resources/page1.PNG)
 
+![](Resources/page2.PNG)
